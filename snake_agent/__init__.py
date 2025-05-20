@@ -1,5 +1,5 @@
-from .agent import DQNAgent
-from .snake_policy_model import SnakeCNNPolicy
 from .snake_wrapper import SnakeWrapper
+from .snake_ppo import SnakePPOModel
+from .ppo_agent import PPOAgent
 
-__all__ = ['DQNAgent', 'SnakeCNNPolicy', 'SnakeWrapper']
+__all__ = ['SnakeWrapper', 'SnakePPOModel', 'PPOAgent']
