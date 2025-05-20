@@ -7,8 +7,8 @@ from snake_game import *
 def main():
     env = SnakeEnv(grid_size=10, num_food=5)
     renderer = SnakeRenderer(env, fps=60)
+    env.reset()
 
-    obs = env.reset()
     action = 3
     running = True
     tick_duration = 0.15
@@ -36,9 +36,8 @@ def main():
             last_step_time = current_time
 
             if done:
-                print("Game Over! Reward:", reward)
                 time.sleep(1)
-                obs = env.reset()
+                env.reset()
 
         renderer.render()
 
