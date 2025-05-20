@@ -1,4 +1,8 @@
-torch~=2.7.0
-tqdm~=4.67.1
 pygame~=2.6.1
+torch~=2.7.0
 numpy~=2.2.6
+tqdm~=4.67.1
+jupyter
+seaborn
+IPython
+matplotlib
