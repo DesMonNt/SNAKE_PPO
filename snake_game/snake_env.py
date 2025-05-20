@@ -8,16 +8,20 @@ class SnakeEnv:
         self.num_food = num_food
         self.random = random.Random(seed)
         np.random.seed(seed)
+
+        self.food = set()
         self.just_reset = False
         self.reset()
 
     def reset(self):
         self.snake = [np.array([self.grid_size // 2, self.grid_size // 2])]
         self.direction = np.array(self.random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)]))
-        self.food = set()
+        self.food.clear()
         self._spawn_food()
-        self.prev_distance = self._distance_to_nearest_food()
+
         self.just_reset = True
+        self.steps_since_last_food = 0
+        self.total_steps = 0
 
         return self._get_obs()
 
@@ -34,6 +38,7 @@ class SnakeEnv:
             self.direction = new_dir
 
         self.just_reset = False
+        self.total_steps += 1
 
         new_head = self.snake[0] + self.direction
         reward = -0.01
@@ -42,31 +47,26 @@ class SnakeEnv:
         if not (0 <= new_head[0] < self.grid_size and 0 <= new_head[1] < self.grid_size):
             reward = -1.0
             done = True
-
-            return self._get_obs(), reward, done
-
-        if any(np.array_equal(new_head, part) for part in self.snake):
+        elif any(np.array_equal(new_head, part) for part in self.snake):
             reward = -1.0
             done = True
-
-            return self._get_obs(), reward, done
-
-        self.snake.insert(0, new_head.copy())
-
-        if tuple(new_head) in self.food:
-            reward = 1.0
-            self.food.remove(tuple(new_head))
-            self._spawn_food()
         else:
-            self.snake.pop()
+            self.snake.insert(0, new_head.copy())
 
-        new_distance = self._distance_to_nearest_food()
-        delta = self.prev_distance - new_distance
+            if tuple(new_head) in self.food:
+                reward = 3.5 * np.sqrt(len(self.snake))
+                self.food.remove(tuple(new_head))
+                self._spawn_food()
+                self.steps_since_last_food = 0
+            else:
+                self.snake.pop()
+                self.steps_since_last_food += 1
 
-        if abs(delta) > 0.1:
-            reward += 0.1 * np.sign(delta)
+            if self.steps_since_last_food > self.grid_size * 2:
+                reward -= 1.0
 
-        self.prev_distance = new_distance
+        if done and self.total_steps <= 10:
+            reward -= 1.0
 
         return self._get_obs(), reward, done
 
@@ -92,6 +92,3 @@ class SnakeEnv:
             "food": self.food.copy(),
             "head": tuple(self.snake[0]),
         }
-
-    def _distance_to_nearest_food(self):
-        return min(np.sum(np.abs(self.snake[0] - np.array(f))) for f in self.food)
