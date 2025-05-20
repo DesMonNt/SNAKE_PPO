@@ -4,7 +4,7 @@ from snake_game import SnakeEnv, SnakeRenderer
 from snake_agent import SnakePPOModel, SnakeWrapper
 
 
-def evaluate_agent(model_path="ppo_snake_6400.pt", grid_size=10, fps=10, deterministic=False):
+def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, fps=10, deterministic=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     env = SnakeWrapper(SnakeEnv(grid_size=grid_size, num_food=5))
