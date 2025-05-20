@@ -9,7 +9,7 @@ from snake_agent import SnakePPOModel, PPOAgent, SnakeWrapper
 def train_ppo(
     grid_size=10,
     num_actions=4,
-    num_episodes=10000,
+    num_episodes=1000,
     rollout_len=2048,
     update_epochs=4,
     batch_size=128,
@@ -19,7 +19,7 @@ def train_ppo(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     env = SnakeWrapper(SnakeEnv(grid_size=grid_size, num_food=5))
-    model = SnakePPOModel(num_actions=num_actions).to(device)
+    model = SnakePPOModel(grid_size=grid_size, num_actions=num_actions).to(device)
     agent = PPOAgent(model)
 
     best_reward = -float("inf")
@@ -34,6 +34,7 @@ def train_ppo(
     }
 
     progress = trange(num_episodes, desc="Training", ncols=100)
+
     for ep in progress:
         for _ in range(rollout_len):
             state = obs.to(device)

@@ -10,7 +10,7 @@ from snake_agent import SnakePPOModel, SnakeWrapper
 def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, fps=10, deterministic=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = SnakePPOModel(num_actions=4).to(device)
+    model = SnakePPOModel(grid_size=grid_size, num_actions=4).to(device)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.eval()
 
@@ -35,6 +35,7 @@ def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, fps=10, deterministi
                 action = dist.sample().item()
 
         state, reward, done = env.step(action)
+        state = state.to(device)
 
         if done:
             time.sleep(1)

@@ -4,7 +4,7 @@ from torch.distributions import Categorical
 
 
 class PPOAgent:
-    def __init__(self, model, lr=3e-4, gamma=0.99, lam=0.95, clip_eps=0.2, entropy_coef=0.01):
+    def __init__(self, model, lr=1e-4, gamma=0.99, lam=0.95, clip_eps=0.2, entropy_coef=0.01):
         self.model = model
         self.optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
         self.gamma = gamma

@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 
 
 def obs_to_tensor(obs, grid_size):
@@ -14,3 +15,10 @@ def obs_to_tensor(obs, grid_size):
         tensor[2, fx, fy] = 1.0
 
     return tensor.unsqueeze(0)
+
+def init_weights(module):
+    if isinstance(module, (nn.Conv2d, nn.Linear)):
+        nn.init.kaiming_normal_(module.weight, nonlinearity='relu')
+
+        if module.bias is not None:
+            nn.init.constant_(module.bias, 0)
