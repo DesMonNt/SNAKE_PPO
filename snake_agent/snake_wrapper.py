@@ -1,17 +1,18 @@
+from snake_agent.utils import obs_to_tensor
 from snake_game import SnakeEnv
-from .utils import obs_to_tensor
 
 
 class SnakeWrapper:
-    def __init__(self, env: SnakeEnv):
+    def __init__(self, env: SnakeEnv, transform=None):
         self.env = env
         self.grid_size = env.grid_size
         self.num_actions = 4
+        self.transform = transform if transform is not None else lambda x: obs_to_tensor(x, grid_size=self.grid_size)
 
     def reset(self):
         obs = self.env.reset()
-        return obs_to_tensor(obs, grid_size=self.grid_size)
+        return self.transform(obs) if self.transform else obs
 
     def step(self, action):
         obs, reward, done = self.env.step(action)
-        return obs_to_tensor(obs, grid_size=self.grid_size), reward, done
+        return self.transform(obs) if self.transform else obs, reward, done

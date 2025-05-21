@@ -27,10 +27,10 @@ class SnakeEnv:
 
     def step(self, action: int):
         dir_map = {
-            0: np.array([-1, 0]),  # Up
-            1: np.array([0, -1]),  # Left
-            2: np.array([1, 0]),   # Down
-            3: np.array([0, 1]),   # Right
+            0: np.array([-1, 0]),
+            1: np.array([0, -1]),
+            2: np.array([1, 0]),
+            3: np.array([0, 1]),
         }
         new_dir = dir_map[action]
 
@@ -41,7 +41,7 @@ class SnakeEnv:
         self.total_steps += 1
 
         new_head = self.snake[0] + self.direction
-        reward = -0.01
+        reward = -0.001
         done = False
 
         if not (0 <= new_head[0] < self.grid_size and 0 <= new_head[1] < self.grid_size):
@@ -75,19 +75,19 @@ class SnakeEnv:
 
     def _spawn_food(self):
         needed = self.num_food - len(self.food)
+
         if needed <= 0:
             return
 
         occupied = {tuple(p) for p in self.snake} | self.food
-        available = [(i, j) for i in range(self.grid_size) for j in range(self.grid_size)
-                     if (i, j) not in occupied]
+        available = [(i, j) for i in range(self.grid_size) for j in range(self.grid_size) if (i, j) not in occupied]
 
         new_food = self.random.sample(available, min(len(available), needed))
         self.food.update(new_food)
 
     def _get_obs(self):
         return {
-            "snake": [tuple(p) for p in self.snake],
-            "food": self.food.copy(),
             "head": tuple(self.snake[0]),
+            "snake": [tuple(p) for p in self.snake],
+            "food": self.food.copy()
         }

@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 from tqdm import trange
-
 from snake_game import SnakeEnv
 from snake_agent import SnakePPOModel, PPOAgent, SnakeWrapper
 
@@ -9,12 +8,11 @@ from snake_agent import SnakePPOModel, PPOAgent, SnakeWrapper
 def train_ppo(
     grid_size=10,
     num_actions=4,
-    num_episodes=5000,
+    num_episodes=1000,
     rollout_len=2048,
     update_epochs=4,
     batch_size=128,
     save_path="ppo_snake.pt",
-    checkpoint_every=100
 ):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -80,11 +78,6 @@ def train_ppo(
             if avg_reward > best_reward:
                 best_reward = avg_reward
                 torch.save(model.state_dict(), save_path)
-
-        if ep % checkpoint_every == 0 and ep > 0:
-            torch.save(model.state_dict(), f"ppo_snake_{ep}.pt")
-
-    torch.save(model.state_dict(), save_path)
 
 
 if __name__ == "__main__":

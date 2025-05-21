@@ -50,7 +50,6 @@ def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, num_food=5, fps=10, 
 
 if __name__ == "__main__":
     evaluate_agent(
-        grid_size=10,
         num_food=5,
         deterministic=True
     )
