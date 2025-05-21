@@ -9,7 +9,7 @@ from snake_agent import SnakePPOModel, PPOAgent, SnakeWrapper
 def train_ppo(
     grid_size=10,
     num_actions=4,
-    num_episodes=1000,
+    num_episodes=5000,
     rollout_len=2048,
     update_epochs=4,
     batch_size=128,

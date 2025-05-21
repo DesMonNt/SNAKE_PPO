@@ -7,14 +7,14 @@ from snake_game import SnakeEnv, SnakeRenderer
 from snake_agent import SnakePPOModel, SnakeWrapper
 
 
-def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, fps=10, deterministic=False):
+def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, num_food=5, fps=10, deterministic=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = SnakePPOModel(grid_size=grid_size, num_actions=4).to(device)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.eval()
 
-    env = SnakeWrapper(SnakeEnv(grid_size=grid_size, num_food=5))
+    env = SnakeWrapper(SnakeEnv(grid_size=grid_size, num_food=num_food))
     renderer = SnakeRenderer(env.env, fps=fps)
     state = env.reset().to(device)
 
@@ -49,4 +49,8 @@ def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, fps=10, deterministi
 
 
 if __name__ == "__main__":
-    evaluate_agent(deterministic=True)
+    evaluate_agent(
+        grid_size=10,
+        num_food=5,
+        deterministic=True
+    )

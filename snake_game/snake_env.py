@@ -54,18 +54,17 @@ class SnakeEnv:
             self.snake.insert(0, new_head.copy())
 
             if tuple(new_head) in self.food:
-                reward = 3.5 * np.sqrt(len(self.snake))
+                reward += 1.0
+
                 self.food.remove(tuple(new_head))
                 self._spawn_food()
-                self.steps_since_last_food = 0
             else:
                 self.snake.pop()
-                self.steps_since_last_food += 1
-
-            if self.steps_since_last_food > self.grid_size * 2:
-                reward -= 1.0
 
         if done and self.total_steps <= 10:
+            reward -= 1.0
+
+        if done and self.total_steps <= 5:
             reward -= 1.0
 
         return self._get_obs(), reward, done
