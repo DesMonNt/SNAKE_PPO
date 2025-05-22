@@ -1,5 +1,5 @@
-from .snake_wrapper import SnakeWrapper
-from .snake_ppo_model import SnakePPOModel
+from .wrapper import Wrapper
+from .snake_policy_network import SnakePolicyNetwork
 from .ppo_agent import PPOAgent
 
-__all__ = ['SnakeWrapper', 'SnakePPOModel', 'PPOAgent']
+__all__ = ['Wrapper', 'SnakePolicyNetwork', 'PPOAgent']

@@ -3,7 +3,7 @@ from torch import nn
 
 
 def obs_to_tensor(obs, grid_size):
-    tensor = torch.zeros((3, grid_size, grid_size), dtype=torch.float32)
+    tensor = torch.zeros((5, grid_size, grid_size), dtype=torch.float32)
 
     hx, hy = obs["head"]
     tensor[0, hx, hy] = 1.0
@@ -14,7 +14,10 @@ def obs_to_tensor(obs, grid_size):
     for fx, fy in obs["food"]:
         tensor[2, fx, fy] = 1.0
 
-    return tensor.unsqueeze(0)
+    tensor[3] = torch.linspace(0.01, 0.99, grid_size).repeat(grid_size, 1)
+    tensor[4] = torch.linspace(0.01, 0.99, grid_size).unsqueeze(1).repeat(1, grid_size)
+
+    return tensor
 
 def init_weights(module):
     if isinstance(module, (nn.Conv2d, nn.Linear)):

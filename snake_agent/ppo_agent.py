@@ -14,7 +14,8 @@ class PPOAgent:
 
     @torch.no_grad()
     def select_action(self, state):
-        logits, value = self.model(state)
+        state_batch = state.unsqueeze(0)
+        logits, value = self.model(state_batch)
         dist = Categorical(logits=logits)
         action = dist.sample()
 
@@ -43,7 +44,19 @@ class PPOAgent:
 
         device = next(self.model.parameters()).device
 
-        states = torch.cat(states).to(device)
+        max_H = max(s.shape[1] for s in states)
+        max_W = max(s.shape[2] for s in states)
+
+        padded_states = []
+        for s in states:
+            C, H, W = s.shape
+            pad_h = max_H - H
+            pad_w = max_W - W
+            s_padded = F.pad(s, (0, pad_w, 0, pad_h))
+            padded_states.append(s_padded)
+
+        states = torch.stack(padded_states).to(device)
+
         actions = torch.tensor(actions).to(device)
         log_probs_old = torch.tensor(log_probs_old).to(device)
         returns = torch.tensor(returns, dtype=torch.float32).to(device)
@@ -55,7 +68,11 @@ class PPOAgent:
 
         for _ in range(epochs):
             for s, a, old_logp, ret, adv in loader:
-                s, a, old_logp, ret, adv = s.to(device), a.to(device), old_logp.to(device), ret.to(device), adv.to(device)
+                s = s.to(device)
+                a = a.to(device)
+                old_logp = old_logp.to(device)
+                ret = ret.to(device)
+                adv = adv.to(device)
 
                 logits, value = self.model(s)
                 dist = Categorical(logits=logits)
