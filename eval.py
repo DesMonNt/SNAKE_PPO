@@ -1,3 +1,4 @@
+import random
 import sys
 import time
 import pygame
@@ -7,7 +8,7 @@ from snake_game import SnakeEnv, SnakeRenderer
 from snake_agent import Wrapper, SnakePolicyNetwork
 
 
-def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, num_food=5, fps=10, deterministic=False):
+def evaluate_agent(model_path="checkpoints/ppo_snake.pt", grid_size=10, num_food=5, fps=10, deterministic=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = SnakePolicyNetwork(num_actions=4).to(device)
@@ -49,8 +50,7 @@ def evaluate_agent(model_path="ppo_snake.pt", grid_size=10, num_food=5, fps=10, 
 
 
 if __name__ == "__main__":
-    evaluate_agent(
-        grid_size=10,
-        num_food=5,
-        deterministic=False
-    )
+    grid_size = random.choice([n for n in range(6, 26, 2)])
+    num_food = random.randint(1, 20)
+
+    evaluate_agent(grid_size=grid_size, num_food=num_food, deterministic=True)

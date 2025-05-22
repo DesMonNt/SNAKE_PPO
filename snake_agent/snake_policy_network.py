@@ -11,7 +11,7 @@ class SnakePolicyNetwork(nn.Module):
         num_heads: int = 4,
         mlp_hidden_dim: int = 256,
         mlp_layers: int = 2,
-        dropout: float = 0.1,
+        dropout: float = 0.2,
     ):
         super().__init__()
 
@@ -54,7 +54,6 @@ class SnakePolicyNetwork(nn.Module):
         x = torch.cat((cls, x), dim=1)
 
         x, _ = self.attn(x, x, x)
-        x = x[:, 0]
         x = self.mlp(x[:, 0])
 
         return self.policy_head(x), self.value_head(x).squeeze(-1)

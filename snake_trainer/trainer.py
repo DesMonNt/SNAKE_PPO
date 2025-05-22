@@ -1,3 +1,4 @@
+import os
 import torch
 import numpy as np
 from tqdm import trange
@@ -40,6 +41,8 @@ class Trainer:
 
         for p in self.ps:
             p.start()
+
+        os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
 
     def train(self):
         for remote in self.remotes:
