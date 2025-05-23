@@ -7,7 +7,7 @@ class SnakePolicyNetwork(nn.Module):
         self,
         num_actions: int,
         in_channels: int = 5,
-        cnn_channels: int = 64,
+        cnn_channels: int = 128,
         num_heads: int = 4,
         mlp_hidden_dim: int = 256,
         mlp_layers: int = 2,
